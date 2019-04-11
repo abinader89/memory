@@ -17,14 +17,15 @@ import $ from "jquery";
 // Local files can be imported directly using relative paths, for example:
 // import socket from "./socket"
 
+import socket from "./socket";
 import game_init from "./starter-game";
 
-$(() => {
+function start() {
   let root = $('#root')[0];
-  game_init(root);
-});
+    if (root) {
+        let channel = socket.channel("games:" + window.gameName, {});
+        game_init(root, channel);
+    }
+}
 
-let channel = socket.channel("games:default", {})
-channel.join()
-  .receive("ok", resp => { console.log("Joined successfully", resp) })
-  .receive("error", resp => { console.log("Unable to join", resp) })
+$(start);
