@@ -24,3 +24,7 @@ $(() => {
   game_init(root);
 });
 
+let channel = socket.channel("games:default", {})
+channel.join()
+  .receive("ok", resp => { console.log("Joined successfully", resp) })
+  .receive("error", resp => { console.log("Unable to join", resp) })
