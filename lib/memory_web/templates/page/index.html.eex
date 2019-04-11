@@ -2,8 +2,10 @@
   <div class="column">
     <h1 align="center" id="index-page">Join a Game</h1>
     <%= form_for @conn, Routes.page_path(@conn, :index), [as: :params], fn f -> %>
+    <div class="row">
       <%= text_input f, :name %>
-      <div align="center"> <%= submit "Join" %> </div>
+      <%= submit "Join" %>
+      </div>
     <% end %>
   </div>
 </div>
