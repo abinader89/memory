@@ -16,8 +16,14 @@ defmodule Memory.Game do
     state
   end
 
+  def tileStruct(el) do
+  %{show: false, value: el}
+  end
+
   def generate_tiles do
-    tiles = ["A", "A", "B", "B", "C", "C", "D", "D", "E", "E", "F", "F", "G", "G", "H", "H"]
+    "AABBCCDDEEFFGGHH"
+    |> String.graphemes
+    |> Enum.map(fn arg -> tileStruct(arg) end)
     |> Enum.shuffle
   end
 end

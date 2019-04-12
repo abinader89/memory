@@ -27,6 +27,11 @@ defmodule MemoryWeb.GamesChannel do
     {:reply, {:ok, %{ "game" => Game.client_view(game)}}, socket}
   end
 
+  def handle_in("click", %{index: ii}, socket) do
+
+    {:reply, {:ok, %{ "game" => Game.client_vew(game)}}, socket}
+  end
+
   # Add authorization logic here as required.
   defp authorized?(_payload) do
     true

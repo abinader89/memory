@@ -9,7 +9,7 @@ export default function game_init(root, channel) {
 const ROWS = 4;
 const TILE = function(props) {
     return <div className="customTile" onClick={props.onClick}>
-        {props.letter}
+        {props.letter.show && props.letter.value}
     </div>;
 }
 
@@ -44,12 +44,13 @@ class Memory extends React.Component {
       }
   }
 
-  click(key) {
-      console.log(key);
+  click(ii, ev) {
+      this.channel.push("click", {index: ii})
+      .receive("ok", (resp) => {this.setState(resp.game);});
   }
 
   render() {
-      let clicks = 
+    let clicks = 
           <div className="row">
           <h4>Clicks: &nbsp; </h4>
           <p>{this.state['clicks']}</p>
@@ -62,14 +63,18 @@ class Memory extends React.Component {
           </div>;
     let grid = _.chunk(this.state['tiles'], ROWS)
       return <div className="container">
-            {clicks}
+              {clicks}
               {grid.map((row, j) => {
                   return <div className="row" key={j}>
-                      {row.map((letter, i) => <TILE key={j * ROWS + i}  onClick={this.click.bind(this)} letter={letter} />)}
+                      {row.map((letter, i) => 
+                          <TILE key={j * ROWS + i}  
+                          onClick={this.click.bind(this, (j * ROWS + i))} 
+                          letter={letter} />)}
                       </div>
               })
               }
-          <div className="column column-40" style={{float: "right"}}>
+          <div className="column column-40" 
+                style={{float: "right"}}>
             {reset}
             {lobby}
           </div>
