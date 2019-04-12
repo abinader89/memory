@@ -24,25 +24,28 @@ class Memory extends React.Component {
     .receive("error", resp => { console.log("Unable to join", resp); });
   }
 
-    got_view(view) {
+  got_view(view) {
         console.log("joined successfully!", view);
         this.setState(view.game);
     }
 
-  reset(_ev) {
+  reset(ev) {
       if (confirm("Are you sure you want to reset?")) {
           // push the reset command down the channel and get the new state
+          this.channel.push("reset", {})
+          .receive("ok", this.got_view.bind(this));
       }
   }
 
-  lobby(_ev) {
+  lobby(ev) {
       if (confirm("Are you sure you want to quit?")) {
+          // go back to the lobby but save the state
           window.location.href = "/";
       }
   }
 
-  flip(_ev) {
-
+  click(key) {
+      console.log(key);
   }
 
   render() {
@@ -62,7 +65,7 @@ class Memory extends React.Component {
             {clicks}
               {grid.map((row, j) => {
                   return <div className="row" key={j}>
-                      {row.map((letter, i) => <TILE key={j * ROWS + i} letter={letter} />)}
+                      {row.map((letter, i) => <TILE key={j * ROWS + i}  onClick={this.click.bind(this)} letter={letter} />)}
                       </div>
               })
               }
