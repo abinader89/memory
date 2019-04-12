@@ -18,7 +18,7 @@ import $ from "jquery";
 // import socket from "./socket"
 
 import socket from "./socket";
-import game_init from "./starter-game";
+import game_init from "./memory";
 
 function start() {
   let root = $('#root')[0];

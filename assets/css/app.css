@@ -2,8 +2,26 @@
 
 @import "~milligram/dist/milligram";
 
-.column > p {
-    padding-top: 10ex;
-    text-align: center;
+:root {
+    background-color: gray;
 }
 
+body {
+    color: white;
+}
+
+.customTile {
+    height: 10ex;
+    width: 10ex;
+    line-height: 10ex;
+    background-color: navy;
+    text-align: center;
+    color: grey; 
+    margin: 5px;
+}
+
+.black-button {
+    background-color: black;
+    border-color: white;
+    color: white;
+}

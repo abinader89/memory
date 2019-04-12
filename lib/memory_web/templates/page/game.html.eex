@@ -4,7 +4,7 @@
 
 <div class="row">
   <div class="column">
-  <h1>Memory: <%= @name %></h1>
+  <h1 align="center">Memory: [<%= @name %>]</h1>
     <div id="root">
       <p>React not loaded...</p>
     </div>
