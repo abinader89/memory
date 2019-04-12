@@ -17,19 +17,31 @@ class Memory extends React.Component {
   constructor(props) {
     super(props);
     this.channel = props.channel;
-    this.state = {
-        tiles: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"],
-        clicks: 0,
-    };
+    this.state = { tiles: [], clicks: -1, };
+    // join the game
+    this.channel.join()
+    .receive("ok", this.got_view.bind(this))
+    .receive("error", resp => { console.log("Unable to join", resp); });
   }
 
+    got_view(view) {
+        console.log("joined successfully!", view);
+        this.setState(view.game);
+    }
+
   reset(_ev) {
-      if (confirm("Are you sure?")) {
+      if (confirm("Are you sure you want to reset?")) {
           // push the reset command down the channel and get the new state
       }
   }
 
-  guess(_ev) {
+  lobby(_ev) {
+      if (confirm("Are you sure you want to quit?")) {
+          window.location.href = "/";
+      }
+  }
+
+  flip(_ev) {
 
   }
 
@@ -42,17 +54,21 @@ class Memory extends React.Component {
     let reset = <div className="column">
           <p><button className="black-button" onClick={this.reset.bind(this)}>Reset</button></p>
           </div>;
+    let lobby = <div className="column">
+          <p><button className="black-button" onClick={this.lobby.bind(this)}>Save & Quit</button></p>
+          </div>;
     let grid = _.chunk(this.state['tiles'], ROWS)
       return <div className="container">
-          {clicks}
+            {clicks}
               {grid.map((row, j) => {
                   return <div className="row" key={j}>
                       {row.map((letter, i) => <TILE key={j * ROWS + i} letter={letter} />)}
                       </div>
               })
               }
-          <div style={{float: "right"}}>
+          <div className="column column-40" style={{float: "right"}}>
             {reset}
+            {lobby}
           </div>
       </div>;
   }

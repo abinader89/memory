@@ -4,11 +4,8 @@ defmodule MemoryWeb.PageController do
   def index(conn, _params) do
     render conn, "index.html"
   end
-  def game(conn, %{"name" => name}) do
-    render conn, "game.html", name: name
-  end
+
   def join(conn, params) do
-    path = "/game/" <> params["params"]["name"]
-    redirect(conn, to: path)
+    render conn, "game.html", game: params["game"]
   end
 end

@@ -1,11 +1,12 @@
-<div class="column">
+<div class="row">
+  <div class="column">
     <h1 align="center" id="index-page">Join a Game</h1>
-    <%= form_for @conn, Routes.page_path(@conn, :index), [as: :params], fn f -> %>
+    <%= form_for @conn, "/game", fn f -> %>
     <div class="row">
       <div class="column column-50">
-        <%= text_input f, :name %>
+        <%= text_input f, :game %>
       </div>
-        <%= submit "Join" %>
+      <button type="submit" class="black-button">Join</button>
     </div>
     <% end %>
 </div>
