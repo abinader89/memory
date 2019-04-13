@@ -9,7 +9,7 @@ export default function game_init(root, channel) {
 const ROWS = 4;
 const TILE = function(props) {
     return <div className="customTile" onClick={props.onClick}>
-        {props.letter.show && props.letter.value}
+        {props.letter.show || props.letter.value}
     </div>;
 }
 
@@ -17,7 +17,7 @@ class Memory extends React.Component {
   constructor(props) {
     super(props);
     this.channel = props.channel;
-    this.state = { tiles: [], clicks: -1, };
+    this.state = { tiles: [], clicks: -1, flipped_tile: null, };
     // join the game
     this.channel.join()
     .receive("ok", this.got_view.bind(this))
@@ -45,9 +45,38 @@ class Memory extends React.Component {
   }
 
   click(ii, ev) {
-      this.channel.push("click", {index: ii})
-      .receive("ok", (resp) => {this.setState(resp.game);});
+      if (this.state.clicks % 2 != 0) {
+          console.log("clicks is even");
+          this.channel.push("click", {index: ii})
+              .receive("ok", (resp) => {this.setState(resp.game);
+                  setTimeout(this.flip_back.bind(this, ii), 1000);});
+      } else {
+         console.log("clicks is odd");
+         this.channel.push("click", {index: ii})
+              .receive("ok", (resp) => {this.setState(resp.game);});
+      }
   }
+
+    flip_back(ii, ev) {
+        var current_tile = this.state.tiles[ii];
+        var showing = this.state.flipped_tile;
+        console.log("value of current tile: ", current_tile);
+        console.log("value of tile last flipped: ", showing);
+        if (showing.value != current_tile.value) {
+            console.log("saved value != current value");
+            var new_tiles = this.state.tiles;
+            for (var jj = 0; jj < new_tiles.length; jj++) {
+                if (new_tiles[jj].value == current_tile.value) {
+                    new_tiles[jj].show = false;
+                }
+                if (new_tiles[jj].value == showing.value) {
+                    new_tiles[jj].show = false;
+                }
+            }
+            var new_state = { tiles: new_tiles, clicks: this.state.clicks, flipped_tile: this.state.flipped_tile, };
+            this.setState(new_state);
+        }
+    }
 
   render() {
     let clicks = 
@@ -64,11 +93,11 @@ class Memory extends React.Component {
     let grid = _.chunk(this.state['tiles'], ROWS)
       return <div className="container">
               {clicks}
-              {grid.map((row, j) => {
-                  return <div className="row" key={j}>
-                      {row.map((letter, i) => 
-                          <TILE key={j * ROWS + i}  
-                          onClick={this.click.bind(this, (j * ROWS + i))} 
+              {grid.map((row, jj) => {
+                  return <div className="row" key={jj}>
+                      {row.map((letter, ii) => 
+                          <TILE key={jj * ROWS + ii}  
+                          onClick={this.click.bind(this, (jj * ROWS + ii))} 
                           letter={letter} />)}
                       </div>
               })
