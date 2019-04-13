@@ -9,13 +9,14 @@ export default function game_init(root, channel) {
 const ROWS = 4;
 const TILE = function(props) {
     return <div className="customTile" onClick={props.onClick}>
-        {props.letter.show || props.letter.value}
+        {props.letter.show && props.letter.value}
     </div>;
 }
 
 class Memory extends React.Component {
   constructor(props) {
     super(props);
+    this.has_clicked = false;
     this.channel = props.channel;
     this.state = { tiles: [], clicks: -1, flipped_tile: null, };
     // join the game
