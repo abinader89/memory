@@ -24,12 +24,16 @@ defmodule Memory.Game do
   end
 
   def click(game, index) do
+    if (Enum.at(game.tiles, index).show) do
+        game
+    else
     new_clicks = game.clicks + 1
     new_tiles = update_tile(game, index)
     %{
         tiles: new_tiles,
         clicks: new_clicks,
     }
+    end
   end
 
   def generate_tiles do
