@@ -13,19 +13,14 @@ defmodule Memory.Game do
     }
   end
 
-  def tileStruct(el) do
-  %{show: false, value: el}
+  def build_from_letter(ll) do
+  %{show: false, matched: false, value: ll}
   end
 
   def update_tile(game, index) do
-    updated_index = Enum.map game.tiles, fn %{show: bool, value: val} = letter ->
-    if letter === Enum.at(game.tiles, index) do
-      Map.put(letter, :show, true)
-    else
-      letter
-    end
-    end
-    IO.inspect(updated_index)
+    update = Map.put(Enum.at(game.tiles, index), :show, true)
+    List.delete_at(game.tiles, index)
+    |> List.insert_at(index, update)
   end
 
   def click(game, index) do
@@ -40,7 +35,7 @@ defmodule Memory.Game do
   def generate_tiles do
     "AABBCCDDEEFFGGHH"
     |> String.graphemes
-    |> Enum.map(fn arg -> tileStruct(arg) end)
+    |> Enum.map(fn ll -> build_from_letter(ll) end)
     |> Enum.shuffle
   end
 end
