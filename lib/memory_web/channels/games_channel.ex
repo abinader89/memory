@@ -27,9 +27,12 @@ defmodule MemoryWeb.GamesChannel do
     {:reply, {:ok, %{ "game" => Game.client_view(game)}}, socket}
   end
 
-  def handle_in("click", %{index: ii}, socket) do
-
-    {:reply, {:ok, %{ "game" => Game.client_vew(game)}}, socket}
+  def handle_in("click", %{ "index" => ii }, socket) do
+    name = socket.assigns[:name]
+    game = Game.click(socket.assigns[:game], ii)
+    socket = assign(socket, :game, game)
+    BackupAgent.put(name, game)
+    {:reply, {:ok, %{ "game" => Game.client_view(game)}}, socket}
   end
 
   # Add authorization logic here as required.
