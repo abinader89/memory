@@ -48,37 +48,22 @@ class Memory extends React.Component {
       }
   }
 
-  click(ii, ev) {/*
-      if (this.state.flipped_tile != null) {
-          console.log("value of selected tile is: ", this.state.flipped_tile);
+  click(ii, ev) {
+      if (this.state.flipped_tile == null) {
           this.channel.push("click", {index: ii})
-              .receive("ok", (resp) => {this.setState(resp.game);
-                  setTimeout(this.flip_back.bind(this, ii), 1000);});
-      } else {*/
-         this.channel.push("click", {index: ii})
               .receive("ok", (resp) => {this.setState(resp.game);});
+      } else {
+          this.channel.push("delay", {index: ii})
+              .receive("ok", (resp) => {this.setState(resp.game);
+                  setTimeout(this.flip_back.bind(this, ii, ev), 1000);});
       }
-//  }
+  }
+
 
     flip_back(ii, ev) {
-        var current_tile = this.state.tiles[ii];
-        var showing = this.state.flipped_tile;
-        console.log("value of current tile: ", current_tile);
-        console.log("value of tile last flipped: ", showing);
-        if (showing.value != current_tile.value) {
-            console.log("saved value != current value so we must flip back");
-            var new_tiles = this.state.tiles;
-            for (var jj = 0; jj < new_tiles.length; jj++) {
-                if (new_tiles[jj].value == current_tile.value) {
-                    new_tiles[jj].show = false;
-                }
-                if (new_tiles[jj].value == showing.value) {
-                    new_tiles[jj].show = false;
-                }
-            }
-            var new_state = { tiles: new_tiles, clicks: this.state.clicks, flipped_tile: null, };
-            this.setState(new_state);
-        }
+        console.log("flip_back");
+        this.channel.push("click", {index: ii})
+            .receive("ok", (resp) => {this.setState(resp.game);});
     }
 
   render() {

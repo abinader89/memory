@@ -17,7 +17,6 @@ defmodule Memory.Game do
       end
   end
 
-
   def client_view(game) do
     client_tiles = get_client_tiles(game.tiles)
     %{
@@ -51,13 +50,20 @@ defmodule Memory.Game do
       end
   end
 
+  def show_clicked(game, index) do
+    update = Map.put(Enum.at(game.tiles, index), :show, true)
+
+    List.delete_at(game.tiles, index)
+    |> List.insert_at(index, update)
+    end
+
   def click(game, index) do
-    if (Enum.at(game.tiles, index).show or Enum.at(game.tiles, index).matched) do
-        game
-    else
-    new_clicks = game.clicks + 1
-    new_tiles = update_tiles(game, index, game.flipped_tile)
-    new_flip = 
+#    if (Enum.at(game.tiles, index).show or Enum.at(game.tiles, index).matched) do
+#      game
+#    else
+      new_clicks = game.clicks + 1
+      new_tiles = update_tiles(game, index, game.flipped_tile)
+      new_flip = 
     if (game.flipped_tile == nil) do
       Enum.at(game.tiles, index)
     else
@@ -67,6 +73,19 @@ defmodule Memory.Game do
         tiles: new_tiles,
         clicks: new_clicks,
         flipped_tile: new_flip,
+    }
+ #   end
+  end
+
+  def delay(game, index) do
+    if (Enum.at(game.tiles, index).show or Enum.at(game.tiles, index).matched) do
+      game
+    else
+    new_tiles = show_clicked(game, index)
+    %{
+        tiles: new_tiles,
+        clicks: game.clicks,
+        flipped_tile: game.flipped_tile,
     }
     end
   end

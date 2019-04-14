@@ -35,6 +35,14 @@ defmodule MemoryWeb.GamesChannel do
     {:reply, {:ok, %{ "game" => Game.client_view(game)}}, socket}
   end
 
+  def handle_in("delay", %{ "index" => ii }, socket) do
+    name = socket.assigns[:name]
+    game = Game.delay(socket.assigns[:game], ii)
+    socket = assign(socket, :game, game)
+    BackupAgent.put(name, game)
+    {:reply, {:ok, %{ "game" => Game.client_view(game)}}, socket}
+  end
+
   # Add authorization logic here as required.
   defp authorized?(_payload) do
     true
