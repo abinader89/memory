@@ -7,9 +7,21 @@ defmodule Memory.Game do
     }
   end
 
+  def get_client_tiles(tiles) do
+      Enum.map tiles, fn %{} = letter ->
+        if (letter.show == false and letter.matched == false) do
+          Map.put(letter, :value, "?")
+        else
+          letter
+        end
+      end
+  end
+
+
   def client_view(game) do
+    client_tiles = get_client_tiles(game.tiles)
     %{
-        tiles: game.tiles,
+        tiles: client_tiles,
         clicks: game.clicks,
         flipped_tile: game.flipped_tile,
     }
@@ -30,7 +42,7 @@ defmodule Memory.Game do
       end
     List.delete_at(game.tiles, index)
     |> List.insert_at(index, update)
-    |> Enum.map fn %{show: bool, value: ll} = letter ->
+    |> Enum.map fn %{} = letter ->
       if (Enum.at(game.tiles, index).value == letter.value and flip.value == letter.value) do
          Map.put(letter, :matched, true)
       else
