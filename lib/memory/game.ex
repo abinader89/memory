@@ -15,27 +15,41 @@ defmodule Memory.Game do
     }
   end
 
-  def update_tiles(game, index) do
+  def update_tiles(game, index, flip) when flip == nil do
     update = Map.put(Enum.at(game.tiles, index), :show, true)
     List.delete_at(game.tiles, index)
     |> List.insert_at(index, update)
   end
 
-#  def update_flip(tiles, index) do
-#      Enum.at(tiles, index)
-#  end
+  def update_tiles(game, index, flip) do
+    update = 
+      if (Enum.at(game.tiles, index).value == flip.value) do
+        Map.put(Enum.at(game.tiles, index), :matched, true)
+      else
+        Map.put(Enum.at(game.tiles, index), :show, false)
+      end
+    List.delete_at(game.tiles, index)
+    |> List.insert_at(index, update)
+    |> Enum.map fn %{show: bool, value: ll} = letter ->
+      if (Enum.at(game.tiles, index).value == letter.value and flip.value == letter.value) do
+         Map.put(letter, :matched, true)
+      else
+         Map.put(letter, :show, false)
+      end
+      end
+  end
 
   def click(game, index) do
     if (Enum.at(game.tiles, index).show) do
         game
     else
     new_clicks = game.clicks + 1
-    new_tiles = update_tiles(game, index)
+    new_tiles = update_tiles(game, index, game.flipped_tile)
     new_flip = 
     if (game.flipped_tile == nil) do
-      Enum.at(new_tiles, index)
+      Enum.at(game.tiles, index)
     else
-      game.flipped_tile
+      nil
     end
     %{
         tiles: new_tiles,
@@ -46,7 +60,7 @@ defmodule Memory.Game do
   end
 
   def build_from_letter(ll) do
-  %{show: false, value: ll}
+  %{show: false, value: ll, matched: false}
   end
 
   def generate_tiles do

@@ -9,14 +9,13 @@ export default function game_init(root, channel) {
 const ROWS = 4;
 const TILE = function(props) {
     return <div className="customTile" onClick={props.onClick}>
-        {props.letter.show && props.letter.value}
+        {(props.letter.show || props.letter.matched) && props.letter.value}
     </div>;
 }
 
 class Memory extends React.Component {
   constructor(props) {
     super(props);
-    this.has_clicked = false;
     this.channel = props.channel;
     this.state = { tiles: [], clicks: -1, flipped_tile: null, };
     // join the game
@@ -24,6 +23,10 @@ class Memory extends React.Component {
     .receive("ok", this.got_view.bind(this))
     .receive("error", resp => { console.log("Unable to join", resp); });
   }
+    debug(ev) {
+        console.log("flipped tile: ", this.state.flipped_tile);
+        console.log("tiles: ", this.state.tiles);
+    }
 
   got_view(view) {
         console.log("joined successfully!", view);
@@ -45,18 +48,17 @@ class Memory extends React.Component {
       }
   }
 
-  click(ii, ev) {
+  click(ii, ev) {/*
       if (this.state.flipped_tile != null) {
           console.log("value of selected tile is: ", this.state.flipped_tile);
           this.channel.push("click", {index: ii})
               .receive("ok", (resp) => {this.setState(resp.game);
                   setTimeout(this.flip_back.bind(this, ii), 1000);});
-      } else {
-         console.log("value of selected tile is: ", this.state.flipped_tile);
+      } else {*/
          this.channel.push("click", {index: ii})
               .receive("ok", (resp) => {this.setState(resp.game);});
       }
-  }
+//  }
 
     flip_back(ii, ev) {
         var current_tile = this.state.tiles[ii];
@@ -80,6 +82,9 @@ class Memory extends React.Component {
     }
 
   render() {
+    let debug = <div className="column">
+          <p><button className="black-button" onClick={this.debug.bind(this)}>Debug!</button></p>
+          </div>;
     let clicks = 
           <div className="row">
           <h4>Clicks: &nbsp; </h4>
@@ -93,7 +98,10 @@ class Memory extends React.Component {
           </div>;
     let grid = _.chunk(this.state['tiles'], ROWS)
       return <div className="container">
+          <div className="row">
               {clicks}
+              {debug}
+          </div>
               {grid.map((row, jj) => {
                   return <div className="row" key={jj}>
                       {row.map((letter, ii) => 
