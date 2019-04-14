@@ -15,32 +15,28 @@ defmodule Memory.Game do
     }
   end
 
-  def update_tiles(game, index, new_flip, new_clicks) do
-    IO.inspect("clicks is odd")
+  def update_tiles(game, index) do
     update = Map.put(Enum.at(game.tiles, index), :show, true)
     List.delete_at(game.tiles, index)
     |> List.insert_at(index, update)
   end
 
-  def update_flip(tiles, index) do
-      IO.inspect("nothing to match")
-      Enum.at(tiles, index)
-  end
+#  def update_flip(tiles, index) do
+#      Enum.at(tiles, index)
+#  end
 
   def click(game, index) do
     if (Enum.at(game.tiles, index).show) do
         game
     else
     new_clicks = game.clicks + 1
+    new_tiles = update_tiles(game, index)
     new_flip = 
-      if (rem(new_clicks, 2) != 0) do
-        update_flip(game.tiles, index)
-      else
-        game.flipped_tile
-      end
-    new_tiles = update_tiles(game, index, new_flip, new_clicks)
-    IO.inspect(new_tiles)
-    IO.inspect(new_flip)
+    if (game.flipped_tile == nil) do
+      Enum.at(new_tiles, index)
+    else
+      game.flipped_tile
+    end
     %{
         tiles: new_tiles,
         clicks: new_clicks,
