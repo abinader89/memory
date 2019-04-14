@@ -40,7 +40,7 @@ defmodule Memory.Game do
   end
 
   def click(game, index) do
-    if (Enum.at(game.tiles, index).show) do
+    if (Enum.at(game.tiles, index).show or Enum.at(game.tiles, index).matched) do
         game
     else
     new_clicks = game.clicks + 1
