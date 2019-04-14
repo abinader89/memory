@@ -16,6 +16,7 @@ const TILE = function(props) {
 class Memory extends React.Component {
   constructor(props) {
     super(props);
+    this.delay = false;
     this.channel = props.channel;
     this.state = { tiles: [], clicks: -1, flipped_tile: null, };
     // join the game
@@ -49,10 +50,15 @@ class Memory extends React.Component {
   }
 
   click(ii, ev) {
+      if (this.delay) {
+          console.log("delay in progress...");
+          return;
+      }
       if (this.state.flipped_tile == null) {
           this.channel.push("click", {index: ii})
               .receive("ok", (resp) => {this.setState(resp.game);});
       } else {
+          this.delay = true;
           this.channel.push("delay", {index: ii})
               .receive("ok", (resp) => {this.setState(resp.game);
                   setTimeout(this.flip_back.bind(this, ii, ev), 1000);});
@@ -64,12 +70,10 @@ class Memory extends React.Component {
         console.log("flip_back");
         this.channel.push("click", {index: ii})
             .receive("ok", (resp) => {this.setState(resp.game);});
+        this.delay = false;
     }
 
   render() {
-    let debug = <div className="column">
-          <p><button className="black-button" onClick={this.debug.bind(this)}>Debug!</button></p>
-          </div>;
     let clicks = 
           <div className="row">
           <h4>Clicks: &nbsp; </h4>
@@ -85,7 +89,6 @@ class Memory extends React.Component {
       return <div className="container">
           <div className="row">
               {clicks}
-              {debug}
           </div>
               {grid.map((row, jj) => {
                   return <div className="row" key={jj}>
