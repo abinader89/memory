@@ -58,9 +58,9 @@ defmodule Memory.Game do
     end
 
   def click(game, index) do
-#    if (Enum.at(game.tiles, index).show or Enum.at(game.tiles, index).matched) do
-#      game
-#    else
+    if ((Enum.at(game.tiles, index).show or Enum.at(game.tiles, index).matched) and game.flipped_tile == nil) do
+      game
+    else
       new_clicks = game.clicks + 1
       new_tiles = update_tiles(game, index, game.flipped_tile)
       new_flip = 
@@ -74,7 +74,7 @@ defmodule Memory.Game do
         clicks: new_clicks,
         flipped_tile: new_flip,
     }
- #   end
+    end
   end
 
   def delay(game, index) do
