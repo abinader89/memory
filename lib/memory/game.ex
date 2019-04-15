@@ -41,13 +41,14 @@ defmodule Memory.Game do
       end
     List.delete_at(game.tiles, index)
     |> List.insert_at(index, update)
-    |> Enum.map fn %{} = letter ->
+    |> Enum.map(fn %{} = letter ->
       if (Enum.at(game.tiles, index).value == letter.value and flip.value == letter.value) do
          Map.put(letter, :matched, true)
       else
          Map.put(letter, :show, false)
       end
       end
+)
   end
 
   def show_clicked(game, index) do
