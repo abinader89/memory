@@ -54,6 +54,10 @@ class Memory extends React.Component {
           console.log("delay in progress...");
           return;
       }
+      if (this.state.tiles[ii].show || this.state.tiles[ii].matched) {
+          console.log("cheater!");
+          return;
+      }
       if (this.state.flipped_tile == null) {
           this.channel.push("click", {index: ii})
               .receive("ok", (resp) => {this.setState(resp.game);});

@@ -48,7 +48,7 @@ defmodule Memory.Game do
          Map.put(letter, :show, false)
       end
       end
-)
+      )
   end
 
   def show_clicked(game, index) do
